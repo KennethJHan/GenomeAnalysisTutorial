@@ -1,10 +1,10 @@
 # Genome Analysis Tutorial
 
 ## 0. 소개
-안녕하세요. 한주현 입니다.  
+여러분 안녕하세요. 한주현 입니다.  
 **바닥부터 Genome Analysis**에 오신것을 환영합니다.  
 본 repository에는 강의에 필요한 파일들과 각종 커맨드 들을 소개하여 여러분들께서 직접 바닥부터 DNA Genome Analysis Variant Calling Pipeline을 만들어 볼 수 있는 tutorial을 제공합니다.  
-특히 본 강의에서는 BWA2, GATK4와 같이 최신의 툴을 사용하여 pipeline을 만들어보는 강의를 진행합니다.  
+특히 본 강의에서는 **BWA2**, **GATK4**와 같이 **최신의 툴**을 사용하여 pipeline을 만들어보는 강의를 진행합니다.  
 다음 유튜브 링크에서 강의를 보면서 실습을 진행해보세요!
 [바닥부터 Genome Analysis 강의 링크](#)
 
@@ -34,9 +34,9 @@
   1.3 파일 다운로드
   1.4 파일 준비
   1.5 툴 설치
-      1.5.1 BWA 설치
+      1.5.1 BWA2 설치
       1.5.2 Samtools 설치
-      1.5.3 GATK 설치
+      1.5.3 GATK4 설치
 2. 전체 워크플로우
 3. Reference에 서열 mapping
 4. Duplication 리드 marking
@@ -75,12 +75,79 @@ $ gunzip hg38.chr21.fa.bwt.2bit.64.gz
 ```
 
 ### 1.5 툴 설치
-#### 1.5.1 BWA 설치
+#### 1.5.1 BWA2 설치
+"설치 방법 1" 과 "설치 방법 2"가 있습니다. 우선 "설치 방법 1"로 진행해보시고 실행이 되지 않는다면 "설치 방법 2"로 진행해주세요.
+- 설치 방법 1 & 설치 확인
+다음 커맨드를 실행해줍니다.
+```
+$ curl -L https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.0pre2/bwa-mem2-2.0pre2_x64-linux.tar.bz2  | tar jxf -
+$ cd bwa-mem2-2.0pre2_x64-linux
+$ ./bwa-mem2
+Usage: bwa-mem2 <command> <arguments>
+Commands:
+  index         create index
+  mem           alignment
+  version       print version number
+```
+
+혹시 bwa-mem2 를 실행하였는데 다음과 같은 오류가 나온다면 "설치 방법 2" 로 진행해주세요.
+```bash
+$ ./bwa-mem2 
+Please verify that both the operating system and the processor support Intel(R) X87, CMOV, MMX, FXSAVE, SSE, SSE2, SSE3, SSSE3, SSE4_1, SSE4_2, MOVBE, POPCNT, F16C, AVX, FMA, BMI, LZCNT and AVX2 instructions.
+```
+
+- 설치 방법 2 & 설치 확인
+```bash
+$ git clone --recursive https://github.com/bwa-mem2/bwa-mem2
+$ cd bwa-mem2
+$ make
+$ ./bwa-mem2
+```
 
 #### 1.5.2 Samtools 설치
+- 설치 방법
+다음 유튜브 링크를 참조하시면 수월하게 설치를 하실 수 있습니다.
+https://www.youtube.com/watch?v=8bau7KESJTo
 
-#### 1.5.3 GATK 설치
+유튜브 링크에서는 samtools-1.10 버전으로 진행하는데,
+2021년 5월 기준 samtools-1.12가 최신 버전입니다.
+설치 방법에는 차이가 없으므로 유튜브 링크대로 진행하시면 됩니다!
 
+- 설치 확인
+samtools를 실행시켰을 때 다음과 같이 나오면 정상적으로 설치 된 것입니다.
+```bash
+$ samtools
+
+Program: samtools (Tools for alignments in the SAM format)
+Version: 1.12 (using htslib 1.12)
+
+Usage:   samtools <command> [options]
+
+Commands:
+  -- Indexing
+```
+
+#### 1.5.3 GATK4 설치
+- 설치 방법
+GATK4의 경우 그냥 다운 받아 압축을 해제하면 됩니다.
+```bash
+$ wget https://github.com/broadinstitute/gatk/releases/download/4.2.0.0/gatk-4.2.0.0.zip
+$ unzip gatk-4.2.0.0.zip
+```
+- 설치 확인
+압축을 푼 디렉터리 내부에서 다음과 같이 실행시켰을 때,
+```bash
+$ java -jar gatk-package-4.2.0.0-local.jar
+USAGE:  <program name> [-h]
+
+Available Programs:
+--------------------------------------------------------------------------------------
+Base Calling:                                    Tools that process sequencing machine data, e.g. Illumina base calls, and detect sequencing level attributes, e.g. adapters
+    CheckIlluminaDirectory (Picard)              Asserts the validity for specified Illumina basecalling data.  
+    CollectIlluminaBasecallingMetrics (Picard)   Collects Illumina Basecalling metrics for a sequencing run. 
+...
+```
+과 같이 나오면 정상적으로 설치 된 것입니다.
 
 ## 2. 전체 워크플로우
 샘플에서 DNA를 추출하고 DNA를 무작위로 자른 후 sequencer가 읽을 수 있도록 library를 제작합니다. 이후 이를 sequencer에 넣고 DNA 서열을 읽어서 A, C, G, T의 서열이 나오게 됩니다. Sequencer가 library를 한 번 읽는 단위를 리드(read)라고 합니다. 한 샘플을 Sequencer에서 서열을 읽게 되면 수백만개의 리드가 나오게 되는데 이렇게 리드로 구성된 파일을 FASTQ 파일이라고 합니다.  
