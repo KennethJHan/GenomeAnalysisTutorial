@@ -1,0 +1,19 @@
+## START: ALIGN - Sat May  8 23:29:16 KST 2021
+/home/ken/data2/etc/bwa-mem2/bwa-mem2 mem -t 1 -R "@RG	ID:sample	SM:sample	PL:platform" /home/ken/data2/Lecture/GenomeAnalysis/resource/reference/hg38.chr21.fa sample_1.fastq.gz sample_2.fastq.gz > sample.mapped.sam
+/home/ken/data2/etc/samtools-1.12/bin/samtools view -Sb sample.mapped.sam > sample.mapped.bam
+/home/ken/data2/etc/samtools-1.12/bin/samtools sort -n -o sample.namesorted.bam sample.mapped.bam
+## END: ALIGN - Sat May  8 23:29:16 KST 2021
+## START: FIXMATE - Sat May  8 23:29:16 KST 2021
+/home/ken/data2/etc/samtools-1.12/bin/samtools fixmate -m sample.namesorted.bam sample.fixmate.bam
+/home/ken/data2/etc/samtools-1.12/bin/samtools sort -o sample.fixmate.sorted.bam sample.fixmate.bam
+## END: FIXMATE - Sat May  8 23:29:16 KST 2021
+## START: MARKDUP - Sat May  8 23:29:16 KST 2021
+/home/ken/data2/etc/samtools-1.12/bin/samtools markdup sample.fixmate.sorted.bam sample.markdup.bam
+/home/ken/data2/etc/samtools-1.12/bin/samtools index sample.markdup.bam
+## END: MARKDUP - Sat May  8 23:29:16 KST 2021
+## START: VARIANT CALL - Sat May  8 23:29:16 KST 2021
+/usr/bin/java -jar /home/ken/data2/etc/gatk/gatk-4.2.0.0/gatk-package-4.2.0.0-local.jar BaseRecalibrator -I sample.markdup.bam -R /home/ken/data2/Lecture/GenomeAnalysis/resource/reference/hg38.chr21.fa --known-sites /home/ken/data2/Lecture/GenomeAnalysis/resource/knownsites/hg38_v0_Homo_sapiens_assembly38.known_indels.chr21.vcf.gz -L chr21 -O sample.recal_data.table
+/usr/bin/java -jar /home/ken/data2/etc/gatk/gatk-4.2.0.0/gatk-package-4.2.0.0-local.jar ApplyBQSR -R /home/ken/data2/Lecture/GenomeAnalysis/resource/reference/hg38.chr21.fa -I sample.markdup.bam --bqsr-recal-file sample.recal_data.table -L chr21 -O sample.recal.bam
+/usr/bin/java -jar /home/ken/data2/etc/gatk/gatk-4.2.0.0/gatk-package-4.2.0.0-local.jar HaplotypeCaller -R /home/ken/data2/Lecture/GenomeAnalysis/resource/reference/hg38.chr21.fa -I sample.recal.bam -L chr21 -O sample.g.vcf -ERC GVCF
+/usr/bin/java -jar /home/ken/data2/etc/gatk/gatk-4.2.0.0/gatk-package-4.2.0.0-local.jar GenotypeGVCFs -R /home/ken/data2/Lecture/GenomeAnalysis/resource/reference/hg38.chr21.fa -V sample.g.vcf -L chr21 -O sample.vcf
+## END: VARIANT CALL - Sat May  8 23:29:16 KST 2021
