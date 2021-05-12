@@ -61,7 +61,7 @@
 
 ### 1.3 파일 다운로드
 ```bash
-$ git clone https://github.com/KennethJHan/GenomeAnalysisTutorial.git
+git clone https://github.com/KennethJHan/GenomeAnalysisTutorial.git
 ```
 
 ### 1.4 파일 준비
@@ -70,8 +70,10 @@ github에서 받은 파일 중 ```hg38.chr21.fa.bwt.2bit.64``` 파일의 크기�
 다음 커맨드를 사용하여 압축을 풀어봅시다.
 
 ```bash
-$ cd resource/reference
-$ gunzip hg38.chr21.fa.bwt.2bit.64.gz
+cd resource/reference
+```
+```
+gunzip hg38.chr21.fa.bwt.2bit.64.gz
 ```
 
 ### 1.5 툴 설치
