@@ -222,7 +222,7 @@ $SAMTOOLS view -Sb sample.mapped.sam > sample.mapped.bam
 
 축하드립니다. 여러분들은 sequencer에서 나온 리드들을 기준서열에 mapping 하였습니다. 우리가 mapping한 리드를 눈으로 살펴 보겠습니다
 ```bash
-$SAMTOOLS view -h sample.markdup.bam | less -S
+$SAMTOOLS view -h sample.mapped.bam | less -S
 ```
 @ 기호로 시작하는 헤더가 있고 그 아래부분들은 각각의 리드입니다.
 
