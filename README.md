@@ -229,12 +229,9 @@ $SAMTOOLS view -h sample.mapped.bam | less -S
 ## 4. Duplication 리드 marking
 이번에는 리드에서 duplication, 즉 중복이 있는 리드를 표기하는 방법에 대해 알아보겠습니다.  
 여기서 중복이라고 말하는 것은 무엇일까요? Sequencing을 진행하게 되면 필연적으로 PCR (Polymerase Chain Reaction) 과정에 의해 중복 리드가 발생하게 되는데요, 이러한 중복 리드들은 variant calling 과정에서 영향을 주게 됩니다. 그래서 duplication을 마킹하여 variant calling 때 영향을 주지 않도록 만들어야 하는데요, Picard와 같은 툴들이 있습니다만 우리는 samtools markdup 으로 진행해보겠습니다. 다음 커맨드들을 하나씩 실행해보겠습니다.
-```bash
-$SAMTOOLS sort -n -o sample.namesorted.bam sample.mapped.bam
-```
 
 ```bash
-$SAMTOOLS fixmate -m sample.namesorted.bam sample.fixmate.bam
+$SAMTOOLS fixmate -m sample.mapped.bam sample.fixmate.bam
 ```
 
 ```bash
