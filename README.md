@@ -80,9 +80,15 @@ $ gunzip hg38.chr21.fa.bwt.2bit.64.gz
 - 설치 방법 1 & 설치 확인
 다음 커맨드를 실행해줍니다.
 ```
-$ curl -L https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.0pre2/bwa-mem2-2.0pre2_x64-linux.tar.bz2  | tar jxf -
-$ cd bwa-mem2-2.0pre2_x64-linux
-$ ./bwa-mem2
+curl -L https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.0pre2/bwa-mem2-2.0pre2_x64-linux.tar.bz2  | tar jxf -
+```
+```
+cd bwa-mem2-2.0pre2_x64-linux
+```
+```
+./bwa-mem2
+```
+```
 Usage: bwa-mem2 <command> <arguments>
 Commands:
   index         create index
@@ -92,16 +98,24 @@ Commands:
 
 혹시 bwa-mem2 를 실행하였는데 다음과 같은 오류가 나온다면 "설치 방법 2" 로 진행해주세요.
 ```bash
-$ ./bwa-mem2 
+./bwa-mem2 
+```
+```
 Please verify that both the operating system and the processor support Intel(R) X87, CMOV, MMX, FXSAVE, SSE, SSE2, SSE3, SSSE3, SSE4_1, SSE4_2, MOVBE, POPCNT, F16C, AVX, FMA, BMI, LZCNT and AVX2 instructions.
 ```
 
 - 설치 방법 2 & 설치 확인
 ```bash
-$ git clone --recursive https://github.com/bwa-mem2/bwa-mem2
-$ cd bwa-mem2
-$ make
-$ ./bwa-mem2
+git clone --recursive https://github.com/bwa-mem2/bwa-mem2
+```
+```
+cd bwa-mem2
+```
+```
+make
+```
+```
+./bwa-mem2
 ```
 
 #### 1.5.2 Samtools 설치
@@ -116,8 +130,9 @@ https://www.youtube.com/watch?v=8bau7KESJTo
 - 설치 확인
 samtools를 실행시켰을 때 다음과 같이 나오면 정상적으로 설치 된 것입니다.
 ```bash
-$ samtools
-
+samtools
+```
+```
 Program: samtools (Tools for alignments in the SAM format)
 Version: 1.12 (using htslib 1.12)
 
@@ -131,13 +146,17 @@ Commands:
 - 설치 방법
 GATK4의 경우 그냥 다운 받아 압축을 해제하면 됩니다.
 ```bash
-$ wget https://github.com/broadinstitute/gatk/releases/download/4.2.0.0/gatk-4.2.0.0.zip
-$ unzip gatk-4.2.0.0.zip
+wget https://github.com/broadinstitute/gatk/releases/download/4.2.0.0/gatk-4.2.0.0.zip
+```
+```
+unzip gatk-4.2.0.0.zip
 ```
 - 설치 확인
 압축을 푼 디렉터리 내부에서 다음과 같이 실행시켰을 때,
 ```bash
-$ java -jar gatk-package-4.2.0.0-local.jar
+java -jar gatk-package-4.2.0.0-local.jar
+```
+```
 USAGE:  <program name> [-h]
 
 Available Programs:
@@ -161,39 +180,47 @@ BAM 파일에서 기준 서열과 다른 서열을 찾아낼 수 있는데, 이�
 샘플을 Sequencer로 읽게 되면 수백만개의 리드들이 나오게 되는데, 이를 저장한 파일 포맷을 FASTQ 라고 합니다. FASTQ 파일을 살펴보겠습니다. data 디렉터리에 들어가서 fastq.gz 파일을 열어서 보겠습니다.
 
 ```bash
-$ cd data
-$ zless -S sample_1.fastq.gz
+cd data
+```
+```
+zless -S sample_1.fastq.gz
 ```
 
 우리가 샘플로 사용하게 될 fastq 파일은 NA12878 이라고 불리는 public data에서 21번 염색체의 데이터만 있는 fastq 파일입니다.  
 fastq 파일에 들어있는 전체 리드의 개수는 몇 개 일까요?  
 fastq 파일의 전체 라인의 개수에 4를 나누게 되면 리드의 개수가 됩니다.
 ```bash
-$ zcat sample_1.fastq.gz | wc -l
+zcat sample_1.fastq.gz | wc -l
+```
+```
 328476
-$ zcat sample_2.fastq.gz | wc -l
+```
+```
+zcat sample_2.fastq.gz | wc -l
+```
+```
 328476
 ```
 
-$328476 / 4 = 82119$
+328476 / 4 = 82119
 총 82,119개의 리드가 fastq 파일에 들어있습니다.  
 
 이제 BWA2 툴을 사용하여 기준서열에 리드들을 mapping 해보겠습니다. 다음 커맨드를 실행해주세요.
 
 ```bash
-$ bwa-mem2 mem -t 1 -R "@RG\tID:sample\tSM:sample\tPL:platform" ../resource/reference/hg38.chr21.fa sample_1.fastq.gz sample_2.fastq.gz > sample.mapped.sam
+$BWA2 mem -t 1 -R "@RG\tID:sample\tSM:sample\tPL:platform" ../resource/reference/hg38.chr21.fa sample_1.fastq.gz sample_2.fastq.gz > sample.mapped.sam
 ```
 
 기본적으로 BWA2 mem 커맨드를 사용하여 나오게되는 파일은 sam 파일입니다. 실제 연구 또는 업무에서는 sam 파일은 크기가 너무 크므로 이를 binary 형태로 압축한 bam 파일을 많이 사용합니다.  
 다음 커맨드를 사용하여 sam 파일을 bam 파일로 변환해 봅시다.
 
 ```bash
-$ samtools view -Sb sample.mapped.sam > sample.mapped.bam
+$SAMTOOLS view -Sb sample.mapped.sam > sample.mapped.bam
 ```
 
 축하드립니다. 여러분들은 sequencer에서 나온 리드들을 기준서열에 mapping 하였습니다. 우리가 mapping한 리드를 눈으로 살펴 보겠습니다
 ```bash
-$ samtools view -h sample.markdup.bam | less -S
+$SAMTOOLS view -h sample.markdup.bam | less -S
 ```
 @ 기호로 시작하는 헤더가 있고 그 아래부분들은 각각의 리드입니다.
 
@@ -201,23 +228,23 @@ $ samtools view -h sample.markdup.bam | less -S
 이번에는 리드에서 duplication, 즉 중복이 있는 리드를 표기하는 방법에 대해 알아보겠습니다.  
 여기서 중복이라고 말하는 것은 무엇일까요? Sequencing을 진행하게 되면 필연적으로 PCR (Polymerase Chain Reaction) 과정에 의해 중복 리드가 발생하게 되는데요, 이러한 중복 리드들은 variant calling 과정에서 영향을 주게 됩니다. 그래서 duplication을 마킹하여 variant calling 때 영향을 주지 않도록 만들어야 하는데요, Picard와 같은 툴들이 있습니다만 우리는 samtools markdup 으로 진행해보겠습니다. 다음 커맨드들을 하나씩 실행해보겠습니다.
 ```bash
-$ samtools sort -n -o sample.namesorted.bam sample.mapped.bam
+$SAMTOOLS sort -n -o sample.namesorted.bam sample.mapped.bam
 ```
 
 ```bash
-$ samtools fixmate -m sample.namesorted.bam sample.fixmate.bam
+$SAMTOOLS fixmate -m sample.namesorted.bam sample.fixmate.bam
 ```
 
 ```bash
-$ samtools sort -o sample.fixmate.sorted.bam sample.fixmate.bam
+$SAMTOOLS sort -o sample.fixmate.sorted.bam sample.fixmate.bam
 ```
 
 ```bash
-$ samtools markdup sample.fixmate.sorted.bam sample.markdup.bam
+$SAMTOOLS markdup sample.fixmate.sorted.bam sample.markdup.bam
 ```
 
 ```bash
-$ samtools index sample.markdup.bam
+$SAMTOOLS index sample.markdup.bam
 ```
 
 축하드립니다. 우리는 samtools를 사용하여 duplication read들을 marking 하였습니다.  
@@ -229,13 +256,13 @@ https://broadinstitute.github.io/picard/explain-flags.html
 우리가 만든 markdup bam에서 duplication으로 마킹된 bam만 꺼내본다면 samtools에서 다음 커맨드를 사용하여 볼 수 있습니다.
 
 ```bash
-$ samtools view -f 1024 sample.markdup.bam
+$SAMTOOLS view -f 1024 sample.markdup.bam
 ```
 가장 먼저 나오는 리드의 flag가 1153인데 이를 explain-flags 사이트에 1153을 넣어보면, read is PCR or optical duplicate가 체크됨을 확인할 수 있습니다.  
 
 여기서 리드들을 눈으로 볼 수 있는 또 다른 팁!  
 ```bash
-$ samtools tview sample.markdup.bam
+$SAMTOOLS tview sample.markdup.bam
 ```
 
 나오는 화면에서 / 키를 누르면 검색창이 나오는데 다음 포지션을 입력해줍니다. ```chr21:5012650```
@@ -244,25 +271,25 @@ $ samtools tview sample.markdup.bam
 ## 5. Variant calling
 마지막으로 변이를 찾는 과정인 variant call 과정을 진행해보겠습니다. 다음 커맨드들을 실행해보겠습니다.
 ```bash
-$ java -jar gatk-package-4.2.0.0-local.jar BaseRecalibrator -I sample.markdup.bam -R ../resource/reference/hg38.chr21.fa --known-sites ../resource/knownsites/hg38_v0_Homo_sapiens_assembly38.known_indels.chr21.vcf.gz -L chr21 -O sample.recal_data.table
+java -jar $GATK4 BaseRecalibrator -I sample.markdup.bam -R ../resource/reference/hg38.chr21.fa --known-sites ../resource/knownsites/hg38_v0_Homo_sapiens_assembly38.known_indels.chr21.vcf.gz -L chr21 -O sample.recal_data.table
 ```
 
 ```bash
-$ java -jar gatk-package-4.2.0.0-local.jar ApplyBQSR -R ../resource/reference/hg38.chr21.fa -I sample.markdup.bam --bqsr-recal-file sample.recal_data.table -L chr21 -O sample.recal.bam
+java -jar $GATK4 ApplyBQSR -R ../resource/reference/hg38.chr21.fa -I sample.markdup.bam --bqsr-recal-file sample.recal_data.table -L chr21 -O sample.recal.bam
 ```
 
 ```bash
-$ java -jar gatk-package-4.2.0.0-local.jar HaplotypeCaller -R ../resource/reference/hg38.chr21.fa -I sample.recal.bam -L chr21 -O sample.g.vcf -ERC GVCF
+java -jar $GATK4 HaplotypeCaller -R ../resource/reference/hg38.chr21.fa -I sample.recal.bam -L chr21 -O sample.g.vcf -ERC GVCF
 ```
 
 ```bash
-$ java -jar gatk-package-4.2.0.0-local.jar GenotypeGVCFs -R ../resource/reference/hg38.chr21.fa -V sample.g.vcf -L chr21 -O sample.vcf
+java -jar $GATK4 GenotypeGVCFs -R ../resource/reference/hg38.chr21.fa -V sample.g.vcf -L chr21 -O sample.vcf
 ```
 
 축하드립니다! 여러분들은 FASTQ 파일에서 최종 변이 파일인 vcf 파일을 얻었습니다. 이 파일에서 어떠한 변이들이 있는지 살펴보겠습니다.
 
 ```bash
-$ less -S sample.vcf
+less -S sample.vcf
 ```
 VCF 파일은 샵 문자(#)로 시작하는 헤더 줄과 각 변이의 위치와 정보가 담긴 데이터 줄로 구성되어있습니다.
 조금더 자세히 살펴보면 첫 번째 열은 염색체 번호를 나타내는 CHROM, 두 번째 열은 위치를 나타내는 POS, 네 번째 열은 기준서열을 나타내는 REF, 다섯 번째 열은 변이의 정보인 ALT가 있습니다.
